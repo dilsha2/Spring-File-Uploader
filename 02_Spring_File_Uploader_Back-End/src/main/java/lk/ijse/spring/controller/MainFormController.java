@@ -26,7 +26,7 @@ public class MainFormController {
         if (!file.isEmpty()) {
             try {
                 byte[] bytes = file.getBytes();
-                Path path = Paths.get("C:\\Users\\deric\\Downloads\\filename.jpeg");
+                Path path = Paths.get("C:\\Users\\Dilsha Prasanna\\Downloads\\filename.jpg");
                 Files.write(path, bytes);
                 file.transferTo(path);
                 byte[] imageBytes = Files.readAllBytes(path);
