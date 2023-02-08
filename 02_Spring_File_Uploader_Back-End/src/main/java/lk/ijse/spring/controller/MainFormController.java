@@ -1,6 +1,7 @@
 package lk.ijse.spring.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/upload")
@@ -18,28 +20,18 @@ import java.util.ArrayList;
 @ResponseBody
 public class MainFormController {
 
-    @PostMapping()
-    public ArrayList<Byte> submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
-        System.out.println("Invoked");
-        modelMap.addAttribute("file", file);
+    @PostMapping("/upload")
+    public String handleFileUpload(@RequestParam("file") MultipartFile file,
+                                   Model model) {
 
-        if (!file.isEmpty()) {
-            try {
-                byte[] bytes = file.getBytes();
-                Path path = Paths.get("C:\\Users\\Dilsha Prasanna\\Downloads\\filename.jpg");
-                Files.write(path, bytes);
-                file.transferTo(path);
-                byte[] imageBytes = Files.readAllBytes(path);
-                ArrayList<Byte> byteStream = new ArrayList<>();
-                for (byte b : imageBytes) {
-                    byteStream.add(b);
-                }
-                return byteStream;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            byte[] bytes = file.getBytes();
+            model.addAttribute("image", Base64.getEncoder().encodeToString(bytes));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
-    }
 
+        return "image-view";
+    }
 }
+

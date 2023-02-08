@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 </head>
 <body>
-<main class="container">
-    <form id="fileSelector" enctype="multipart/form-data" >
-        <input id="imageSelector" type="file" name="file" >
-        <input id="btnUpload" type="submit" value="Upload">
-    </form>
+<img src="data:image/jpeg;base64,{{image}}"/>
+<main>
+<form method="post" enctype="multipart/form-data">
+    <input type="file" name="file"/>
+    <button type="submit">Upload</button>
+</form>
 
 </main>
 <script src="assets/js/bootstrap.min.js"></script>
@@ -20,39 +21,5 @@
 </html>
 
 <script>
-    let baseUrl = "http://localhost:8080/02_Spring_File_Uploader_Back_End_war_exploded/";
 
-    let testXhr;
-    $( '#fileSelector' )
-        .submit( function( e ) {
-            console.log(new FormData(this));
-            $.ajax( {
-                url: baseUrl+"upload",
-                type: 'POST',
-                data: new FormData(this),
-                processData: false,
-                contentType: false,
-                success:function (data, status, xhr) {
-                    fetch(baseUrl+'upload')
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            return response.arrayBuffer();
-                        })
-                        .then(arrayBuffer => {
-                            var contentType = 'image/jpeg';
-                            var blob = new Blob([arrayBuffer], { type: contentType });
-                            var url = URL.createObjectURL(blob);
-                            var img = new Image();
-                            img.src = url;
-                            document.body.appendChild(img);
-                        })
-                        .catch(error => {
-                            console.error(error);
-                        });
-                }
-            } );
-            e.preventDefault();
-        } );
 </script>
