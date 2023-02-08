@@ -1,11 +1,16 @@
 package lk.ijse.spring.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/upload")
@@ -13,14 +18,28 @@ import java.io.IOException;
 @ResponseBody
 public class MainFormController {
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        try {
-            // store the uploaded file
-            file.transferTo(new File("/path/to/store/file"));
-            return ResponseEntity.ok().body("File uploaded successfully");
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Failed to upload file: " + e.getMessage());
+    @PostMapping()
+    public ArrayList<Byte> submit(@RequestParam("file") MultipartFile file, ModelMap modelMap) {
+        System.out.println("Invoked");
+        modelMap.addAttribute("file", file);
+
+        if (!file.isEmpty()) {
+            try {
+                byte[] bytes = file.getBytes();
+                Path path = Paths.get("C:\\Users\\deric\\Downloads\\filename.jpeg");
+                Files.write(path, bytes);
+                file.transferTo(path);
+                byte[] imageBytes = Files.readAllBytes(path);
+                ArrayList<Byte> byteStream = new ArrayList<>();
+                for (byte b : imageBytes) {
+                    byteStream.add(b);
+                }
+                return byteStream;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        return null;
     }
+
 }
